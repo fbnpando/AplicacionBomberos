@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Brigada de Bomberos Forestales</title><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Brigada de Bomberos Forestales</title>
+    <body>
+    <div class="container">
+        <div class="header">
+            <h1>🚒 Brigada de Bomberos Forestales</h1>
+            <p>Formulario de Registro Simplificado</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+        
+        <div class="form-content">
+            <div class="export-buttons">
+                <button class="btn-export" onclick="exportToJSON()">📊 Exportar JSON</button>
+                <button class="btn-export" onclick="exportToCSV()">📈 Exportar CSV</button>
+                <button class="btn-export" onclick="printForm()">🖨️ Imprimir</button>
+            </div>
+            
+            <form id="brigadaForm">
+                <!-- INFORMACIÓN BÁSICA -->
+                <div class="section priority-high">
+                    <h3 class="section-title">
+                        <span class="section-icon">1</span>
+                        Información Básica de la Brigada
+                        <span class="status-indicator status-incomplete" id="status1"></span>
+                    </h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nombreBrigada">Nombre de la Brigada *</label>
+                            <input type="text" id="nombreBrigada" name="nombreBrigada" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cantidadBomberos">Cantidad de Bomberos Activos *</label>
+                            <input type="number" id="cantidadBomberos" name="cantidadBomberos" min="1" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="comandante">Comandante</label>
+                            <input type="text" id="comandante" name="comandante">
+                        </div>
+                        <div class="form-group">
+                            <label for="telefonoComandante">Teléfono Comandante</label>
+                            <input type="tel" id="telefonoComandante" name="telefonoComandante">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="encargadoLogistica">Encargado de Logística</label>
+                            <input type="text" id="encargadoLogistica" name="encargadoLogistica">
+                        </div>
+                        <div class="form-group">
+                            <label for="telefonoEmergencia">Número de Emergencia Público</label>
+                            <input type="tel" id="telefonoEmergencia" name="telefonoEmergencia">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EQUIPAMIENTO EPP -->
+                <div class="section priority-high">
+                    <h3 class="section-title">
+                        <span class="section-icon">2</span>
+                        Equipamiento de Protección Personal (EPP)
+                        <span class="status-indicator status-incomplete" id="status2"></span>
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label>Estado General del EPP</label>
+                        <div class="quick-fill-buttons">
+                            <span class="quick-btn" onclick="setEPPLevel('completo')">Completo</span>
+                            <span class="quick-btn" onclick="setEPPLevel('parcial')">Parcial</span>
+                            <span class="quick-btn" onclick="setEPPLevel('critico')">Crítico</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="uniformes">Uniformes Completos</label>
+                            <input type="number" id="uniformes" name="uniformes" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="botas">Pares de Botas</label>
+                            <input type="number" id="botas" name="botas" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="guantes">Pares de Guantes</label>
+                            <input type="number" id="guantes" name="guantes" min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="cascos">Cascos Forestales</label>
+                            <input type="number" id="cascos" name="cascos" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="linternas">Linternas</label>
+                            <input type="number" id="linternas" name="linternas" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="mascarillas">Mascarillas/Antiparras</label>
+                            <input type="number" id="mascarillas" name="mascarillas" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HERRAMIENTAS -->
+                <div class="section priority-medium">
+                    <h3 class="section-title">
+                        <span class="section-icon">3</span>
+                        Herramientas de Trabajo
+                        <span class="status-indicator status-incomplete" id="status3"></span>
+                    </h3>
+                    
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="azadones">Azadones</label>
+                            <input type="number" id="azadones" name="azadones" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="palas">Palas</label>
+                            <input type="number" id="palas" name="palas" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="rastrillos">Rastrillos</label>
+                            <input type="number" id="rastrillos" name="rastrillos" min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="mcleod">McLeod</label>
+                            <input type="number" id="mcleod" name="mcleod" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="batefuegos">Batefuegos</label>
+                            <input type="number" id="batefuegos" name="batefuegos" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="mochilas">Mochilas Forestales</label>
+                            <input type="number" id="mochilas" name="mochilas" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LOGÍSTICA -->
+                <div class="section priority-medium">
+                    <h3 class="section-title">
+                        <span class="section-icon">4</span>
+                        Logística y Mantenimiento
+                        <span class="status-indicator status-incomplete" id="status4"></span>
+                    </h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="estadoVehiculos">Estado General de Vehículos</label>
+                            <select id="estadoVehiculos" name="estadoVehiculos">
+                                <option value="">Seleccionar...</option>
+                                <option value="excelente">Excelente</option>
+                                <option value="bueno">Bueno</option>
+                                <option value="regular">Regular</option>
+                                <option value="malo">Malo</option>
+                                <option value="critico">Crítico</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="presupuestoMantenimiento">Presupuesto Mensual Mantenimiento (Bs.)</label>
+                            <input type="number" id="presupuestoMantenimiento" name="presupuestoMantenimiento" min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="necesidadesUrgentes">Necesidades Urgentes de Mantenimiento</label>
+                        <textarea id="necesidadesUrgentes" name="necesidadesUrgentes" rows="3" placeholder="Describa las necesidades más urgentes..."></textarea>
+                    </div>
+                </div>
+
+                <!-- SUMINISTROS -->
+                <div class="section priority-low">
+                    <h3 class="section-title">
+                        <span class="section-icon">5</span>
+                        Suministros Esenciales
+                        <span class="status-indicator status-incomplete" id="status5"></span>
+                    </h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nivelAlimentos">Nivel de Alimentos de Emergencia</label>
+                            <select id="nivelAlimentos" name="nivelAlimentos">
+                                <option value="">Seleccionar...</option>
+                                <option value="suficiente">Suficiente (>7 días)</option>
+                                <option value="limitado">Limitado (3-7 días)</option>
+                                <option value="insuficiente">Insuficiente (<3 días)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="nivelMedicamentos">Nivel de Medicamentos</label>
+                            <select id="nivelMedicamentos" name="nivelMedicamentos">
+                                <option value="">Seleccionar...</option>
+                                <option value="completo">Botiquín Completo</option>
+                                <option value="basico">Medicamentos Básicos</option>
+                                <option value="insuficiente">Insuficiente</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="observaciones">Observaciones Generales</label>
+                        <textarea id="observaciones" name="observaciones" rows="4" placeholder="Comentarios adicionales, necesidades especiales, etc."></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">💾 Guardar Información</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
