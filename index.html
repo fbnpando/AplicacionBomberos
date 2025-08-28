@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario Brigada Forestal - Chiquitanas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #2d5016, #4a7c23);
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
+            font-size: 18px;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .form-container {
+            padding: 30px;
+        }
+        
+        .step {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .big-input {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.3rem;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        
+        .big-input:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 5px rgba(255,107,53,0.2);
+            transform: scale(1.02);
+        }
+        
+        .question {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #2d5016;
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+        
+        .help-text {
+            text-align: center;
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .btn-big {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255,107,53,0.3);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+            transform: translateY(-3px);
+        }
+        
+        .auto-fill-notice {
+            background: #e8f5e8;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .auto-fill-notice h3 {
+            color: #2d5016;
+            margin-bottom: 10px;
+        }
+        
+        .summary-box {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #ff6b35;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 1.1rem;
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        
+        .summary-item strong {
+            color: #2d5016;
+        }
+        
+        .talla-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .talla-item {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .talla-item:hover {
+            border-color: #ff6b35;
+            transform: scale(1.05);
+        }
+        
+        .talla-item.selected {
+            background: #ff6b35;
+            color: white;
+            border-color: #ff6b35;
+            transform: scale(1.05);
+        }
+        
+        .talla-input {
+            width: 60px;
+            padding: 8px;
+            font-size: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .talla-input:focus {
+            border-color: #ff6b35;
+            outline: none;
+        }
+        
+        .equipment-category {
+            background: #f0f8f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .category-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2d5016;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .equipment-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .equipment-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #2d5016;
+        }
+        
+        .selected-tallas {
+            background: #e8f5e8;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .success-message {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+        }
+        
+        .success-message h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        
+        .navigation {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .current-step {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            body {
+                font-size: 16px;
+            }
+            
+            .big-input {
+                font-size: 1.1rem;
+                padding: 15px;
+            }
+            
+            .question {
+                font-size: 1.2rem;
+            }
+            
+            .talla-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔥 Inventario Brigada</h1>
+            <p>Simple y Rápido</p>
+        </div>
+        
+        <div class="form-container">
+            <form id="inventoryForm">
+                <!-- Paso 1: Información Básica -->
+                <div class="step active" id="step1">
+                    <div class="current-step">Paso 1 de 5</div>
+                    <div class="question">¿Cuál es el nombre de su brigada?</div>
+                    <input type="text" class="big-input" id="brigadeName" name="brigadeName" placeholder="Escriba el nombre aquí" required>
+                </div>
+                
+                <!-- Paso 2: Cantidad de Bomberos -->
+                <div class="step" id="step2">
+                    <div class="current-step">Paso 2 de 5</div>
+                    <div class="question">¿Cuántos bomberos activos tiene su brigada?</div>
+                    <div class="help-text">Este número se usará para calcular automáticamente todo el equipamiento necesario</div>
+                    <input type="number" class="big-input" id="numBomberos" name="numBomberos" placeholder="Número de bomberos" min="1" max="500" required>
+                    
+                    <div class="auto-fill-notice" style="display: none;" id="autoFillNotice">
+                        <h3>✅ ¡Perfecto!</h3>
+                        <p>Se calculará automáticamente el equipamiento para <span id="bomberosCount">0</span> bomberos</p>
+                    </div>
+                </div>
+                
+                <!-- Paso 3: Selección de Tallas -->
+                <div class="step" id="step3">
+                    <div class="current-step">Paso 3 de 5</div>
+                    <div class="question">👕 Selección de Tallas por Equipamiento</div>
+                    <div class="help-text">Seleccione las tallas necesarias y la cantidad de cada una</div>
+                    
+                    <div id="tallaSelection"></div>
+                </div>
+                
+                <!-- Paso 4: Contactos -->
+                <div class="step" id="step4">
+                    <div class="current-step">Paso 4 de 5</div>
+                    <div class="question">Datos de contacto del comandante</div>
+                    
+                    <div class="form-group">
+                        <input type="text" class="big-input" id="comandante" name="comandante" placeholder="Nombre del comandante" required style="margin-bottom: 15px;">
+                        <input type="tel" class="big-input" id="celularComandante" name="celularComandante" placeholder="Número de celular" required>
+                    </div>
+                    
+                    <div class="help-text">Opcional: Datos de logística</div>
+                    <div class="form-group">
+                        <input type="text" class="big-input" id="logistica" name="logistica" placeholder="Encargado de logística (opcional)" style="margin-bottom: 15px;">
+                        <input type="tel" class="big-input" id="celularLogistica" name="celularLogistica" placeholder="Celular de logística (opcional)">
+                    </div>
+                </div>
+                
+                <!-- Paso 5: Resumen y Lista de Equipamiento -->
+                <div class="step" id="step5">
+                    <div class="current-step">Paso 5 de 5</div>
+                    <div class="question">📋 Resumen del Inventario</div>
+                    
+                    <div class="summary-box">
+                        <h3 style="color: #2d5016; margin-bottom: 15px;">Información de la Brigada:</h3>
+                        <div class="summary-item">
+                            <span>Brigada:</span>
+                            <strong id="summaryBrigada">-</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>Bomberos Activos:</span>
+                            <strong id="summaryBomberos">-</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>Comandante:</span>
+                            <strong id="summaryComandante">-</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>Contacto:</span>
+                            <strong id="summaryContacto">-</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-box">
+                        <h3 style="color: #2d5016; margin-bottom: 15px;">👕 Equipamiento con Tallas:</h3>
+                        <div id="equipmentWithSizes"></div>
+                    </div>
+                    
+                    <div class="summary-box">
+                        <h3 style="color: #2d5016; margin-bottom: 15px;">📦 Equipamiento General:</h3>
+                        <div id="generalEquipment"></div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 30px;">
+                        <label style="display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                            <input type="checkbox" id="confirmData" required style="margin-right: 15px; transform: scale(2);">
+                            Confirmo que los datos son correctos
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn-big btn-primary">
+                        📤 ENVIAR INVENTARIO
+                    </button>
+                </div>
+                
+                <!-- Mensaje de Éxito -->
+                <div class="success-message" id="successMessage">
+                    <h2>🎉 ¡Inventario Registrado!</h2>
+                    <p style="font-size: 1.2rem; margin-top: 15px;">El inventario de su brigada ha sido enviado correctamente.</p>
+                    <p style="margin-top: 10px;">Gracias por mantener actualizada la información.</p>
+                </div>
+                
+                <!-- Navegación -->
+                <div class="navigation" id="navigation">
+                    <button type="button" class="btn-big btn-secondary" id="prevBtn" onclick="previousStep()" disabled>
+                        ← Anterior
+                    </button>
+                    <button type="button" class="btn-big btn-primary" id="nextBtn" onclick="nextStep()">
+                        Siguiente →
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+        
+        // Equipamiento que requiere tallas
+        const equipmentWithSizes = {
+            'Camisa Forestal': { 
+                quantity: 2, 
+                sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'] 
+            },
+            'Pantalón Forestal': { 
+                quantity: 2, 
+                sizes: ['28', '30', '32', '34', '36', '38', '40', '42'] 
+            },
+            'Overol FR': { 
+                quantity: 1, 
+                sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'] 
+            },
+            'Botas Forestales': { 
+                quantity: 1, 
+                sizes: ['38', '39', '40', '41', '42', '43', '44', '45'] 
+            },
+            'Guantes de Cuero': { 
+                quantity: 2, 
+                sizes: ['S', 'M', 'L', 'XL'] 
+            },
+            'Casco Forestal': { 
+                quantity: 1, 
+                sizes: ['Ajustable'] 
+            }
+        };
+        
+        // Equipamiento general (sin tallas)
+        const generalEquipment = {
+            'Esclavina': 1,
+            'Linterna': 1,
+            'Antiparra': 1,
+            'Máscara para Polvo': 3,
+            'Azadón': 1,
+            'Pala': 1,
+            'Rastrillo': 1,
+            'Batefuego': 1,
+            'Mochila Forestal': 1,
+            'Linterna de Cabeza': 1,
+            'Agua (litros por día)': 4,
+            'Barras Energéticas': 3,
+            'Latas de Atún': 2,
+            'Rehidratantes': 2
+        };
+        
+        // Almacenar selecciones de tallas
+        let sizeSelections = {};
+        
+        function showStep(stepNum) {
+            // Ocultar todos los pasos
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            // Mostrar paso actual
+            document.getElementById(`step${stepNum}`).classList.add('active');
+            
+            // Actualizar botones
+            document.getElementById('prevBtn').disabled = stepNum === 1;
+            document.getElementById('nextBtn').style.display = stepNum === totalSteps ? 'none' : 'block';
+            document.getElementById('navigation').style.display = stepNum === totalSteps ? 'none' : 'flex';
+            
+            // Si es el paso de tallas, generar interfaz
+            if (stepNum === 3) {
+                generateSizeSelection();
+            }
+            
+            // Si es el paso final, generar resumen
+            if (stepNum === totalSteps) {
+                generateSummary();
+            }
+        }
+        
+        function generateSizeSelection() {
+            const container = document.getElementById('tallaSelection');
+            let html = '';
+            
+            for (const [item, config] of Object.entries(equipmentWithSizes)) {
+                html += `
+                    <div class="equipment-category">
+                        <div class="category-title">${item}</div>
+                        <div class="help-text">Cantidad por bombero: ${config.quantity} unidad${config.quantity > 1 ? 'es' : ''}</div>
+                        
+                        <div class="talla-grid">
+                            ${config.sizes.map(size => `
+                                <div class="talla-item" onclick="toggleSize('${item}', '${size}')">
+                                    <div style="font-weight: bold; margin-bottom: 5px;">${size}</div>
+                                    <input type="number" class="talla-input" 
+                                           id="size_${item}_${size}" 
+                                           min="0" 
+                                           placeholder="0"
+                                           onclick="event.stopPropagation()"
+                                           onchange="updateSizeCount('${item}', '${size}')">
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="selected-tallas" id="selected_${item}" style="display: none;">
+                            <strong>Tallas seleccionadas:</strong>
+                            <div id="summary_${item}"></div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+            
+            // Inicializar selecciones si ya existen
+            for (const [item, sizes] of Object.entries(sizeSelections)) {
+                for (const [size, count] of Object.entries(sizes)) {
+                    if (count > 0) {
+                        const input = document.getElementById(`size_${item}_${size}`);
+                        if (input) {
+                            input.value = count;
+                            input.closest('.talla-item').classList.add('selected');
+                        }
+                    }
+                }
+                updateSelectedSummary(item);
+            }
+        }
+        
+        function toggleSize(item, size) {
+            const input = document.getElementById(`size_${item}_${size}`);
+            const tallaItem = input.closest('.talla-item');
+            
+            if (input.value === '' || input.value === '0') {
+                input.value = '1';
+                tallaItem.classList.add('selected');
+            } else {
+                input.value = '';
+                tallaItem.classList.remove('selected');
+            }
+            
+            updateSizeCount(item, size);
+        }
+        
+        function updateSizeCount(item, size) {
+            const input = document.getElementById(`size_${item}_${size}`);
+            const tallaItem = input.closest('.talla-item');
+            const value = parseInt(input.value) || 0;
+            
+            // Inicializar si no existe
+            if (!sizeSelections[item]) {
+                sizeSelections[item] = {};
+            }
+            
+            if (value > 0) {
+                sizeSelections[item][size] = value;
+                tallaItem.classList.add('selected');
+            } else {
+                delete sizeSelections[item][size];
+                tallaItem.classList.remove('selected');
+            }
+            
+            updateSelectedSummary(item);
+        }
+        
+        function updateSelectedSummary(item) {
+            const summaryDiv = document.getElementById(`summary_${item}`);
+            const selectedDiv = document.getElementById(`selected_${item}`);
+            
+            if (sizeSelections[item] && Object.keys(sizeSelections[item]).length > 0) {
+                let summaryText = '';
+                for (const [size, count] of Object.entries(sizeSelections[item])) {
+                    summaryText += `${size}: ${count} bomberos, `;
+                }
+                summaryText = summaryText.slice(0, -2); // Quitar última coma
+                
+                summaryDiv.textContent = summaryText;
+                selectedDiv.style.display = 'block';
+            } else {
+                selectedDiv.style.display = 'none';
+            }
+        }
+        
+        function nextStep() {
+            // Validar paso actual antes de avanzar
+            if (currentStep === 1) {
+                const brigadeName = document.getElementById('brigadeName').value.trim();
+                if (!brigadeName) {
+                    alert('Por favor, ingrese el nombre de la brigada');
+                    document.getElementById('brigadeName').focus();
+                    return;
+                }
+            }
+            
+            if (currentStep === 2) {
+                const numBomberos = document.getElementById('numBomberos').value;
+                if (!numBomberos || numBomberos < 1) {
+                    alert('Por favor, ingrese el número de bomberos');
+                    document.getElementById('numBomberos').focus();
+                    return;
+                }
+                showAutoFillNotice();
+            }
+            
+            if (currentStep === 3) {
+                // Validar que se hayan seleccionado tallas para todos los equipamientos
+                let allComplete = true;
+                let missingItems = [];
+                
+                for (const item of Object.keys(equipmentWithSizes)) {
+                    if (!sizeSelections[item] || Object.keys(sizeSelections[item]).length === 0) {
+                        allComplete = false;
+                        missingItems.push(item);
+                    }
+                }
+                
+                if (!allComplete) {
+                    alert(`Por favor, seleccione tallas para: ${missingItems.join(', ')}`);
+                    return;
+                }
+                
+                // Validar que el total de bomberos por talla coincida
+                const numBomberos = parseInt(document.getElementById('numBomberos').value);
+                for (const [item, sizes] of Object.entries(sizeSelections)) {
+                    const totalSelected = Object.values(sizes).reduce((sum, count) => sum + count, 0);
+                    if (totalSelected !== numBomberos) {
+                        alert(`Para ${item}: Has seleccionado tallas para ${totalSelected} bomberos, pero tienes ${numBomberos} bomberos activos. Los números deben coincidir.`);
+                        return;
+                    }
+                }
+            }
+            
+            if (currentStep === 4) {
+                const comandante = document.getElementById('comandante').value.trim();
+                const celular = document.getElementById('celularComandante').value.trim();
+                if (!comandante || !celular) {
+                    alert('Por favor, complete los datos del comandante');
+                    return;
+                }
+            }
+            
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+        
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+        
+        function showAutoFillNotice() {
+            const numBomberos = document.getElementById('numBomberos').value;
+            document.getElementById('bomberosCount').textContent = numBomberos;
+            document.getElementById('autoFillNotice').style.display = 'block';
+        }
+        
+        function generateSummary() {
+            const form = document.getElementById('inventoryForm');
+            const formData = new FormData(form);
+            const numBomberos = parseInt(formData.get('numBomberos')) || 0;
+            
+            // Actualizar resumen básico
+            document.getElementById('summaryBrigada').textContent = formData.get('brigadeName') || '-';
+            document.getElementById('summaryBomberos').textContent = numBomberos;
+            document.getElementById('summaryComandante').textContent = formData.get('comandante') || '-';
+            document.getElementById('summaryContacto').textContent = formData.get('celularComandante') || '-';
+            
+            // Generar resumen de equipamiento con tallas
+            let equipmentWithSizesHTML = '';
+            for (const [item, config] of Object.entries(equipmentWithSizes)) {
+                equipmentWithSizesHTML += `
+                    <div class="equipment-item">
+                        <div class="equipment-name">${item}</div>
+                `;
+                
+                if (sizeSelections[item]) {
+                    for (const [size, count] of Object.entries(sizeSelections[item])) {
+                        const totalUnits = count * config.quantity;
+                        equipmentWithSizesHTML += `
+                            <div class="summary-item">
+                                <span>Talla ${size}:</span>
+                                <strong>${totalUnits} unidades (${count} bomberos × ${config.quantity})</strong>
+                            </div>
+                        `;
+                    }
+                }
+                
+                equipmentWithSizesHTML += '</div>';
+            }
+            document.getElementById('equipmentWithSizes').innerHTML = equipmentWithSizesHTML;
+            
+            // Generar equipamiento general
+            let generalEquipmentHTML = '';
+            for (const [item, quantity] of Object.entries(generalEquipment)) {
+                const total = quantity * numBomberos;
+                generalEquipmentHTML += `
+                    <div class="summary-item">
+                        <span>${item}:</span>
+                        <strong>${total} unidad${total > 1 ? 'es' : ''}</strong>
+                    </div>
+                `;
+            }
+            document.getElementById('generalEquipment').innerHTML = generalEquipmentHTML;
+        }
+        
+        // Auto-rellenar número cuando se ingresa
+        document.getElementById('numBomberos').addEventListener('input', function() {
+            if (this.value) {
+                showAutoFillNotice();
+            } else {
+                document.getElementById('autoFillNotice').style.display = 'none';
+            }
+        });
+        
+        // Navegación con Enter (excepto en paso de tallas)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey && currentStep < totalSteps && currentStep !== 3) {
+                e.preventDefault();
+                nextStep();
+            }
+        });
+        
+        // Manejo del envío
+        document.getElementById('inventoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!document.getElementById('confirmData').checked) {
+                alert('Por favor, confirme que los datos son correctos');
+                return;
+            }
+            
+            // Simular envío
+            document.querySelector('.form-container').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Scroll al mensaje de éxito
+            document.getElementById('successMessage').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+            
+            // Guardar datos en memoria
+            const formData = new FormData(this);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            data.timestamp = new Date().toLocaleString('es-BO');
+            data.numBomberos = parseInt(data.numBomberos);
+            data.sizeSelections = sizeSelections;
+            
+            // Calcular equipamiento total con tallas
+            data.equipmentWithSizes = {};
+            for (const [item, config] of Object.entries(equipmentWithSizes)) {
+                data.equipmentWithSizes[item] = {
+                    perBombero: config.quantity,
+                    sizes: {}
+                };
+                
+                if (sizeSelections[item]) {
+                    for (const [size, bomberosCount] of Object.entries(sizeSelections[item])) {
+                        data.equipmentWithSizes[item].sizes[size] = bomberosCount * config.quantity;
+                    }
+                }
+            }
+            
+            // Calcular equipamiento general
+            data.generalEquipment = {};
+            for (const [item, quantity] of Object.entries(generalEquipment)) {
+                data.generalEquipment[item] = quantity * data.numBomberos;
+            }
+            
+            window.inventoryData = data;
+            console.log('Inventario completo guardado:', data);
+        });
+        
+        // Inicializar
+        showStep(1);
+        
+        // Focus automático en el primer campo
+        setTimeout(() => {
+            document.getElementById('brigadeName').focus();
+        }, 500);
+    </script>
+</body>
+</html>
